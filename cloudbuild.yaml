@@ -5,6 +5,3 @@ steps:
   args:
   - clone
   - git@github.com:Paulymorph/retention-backend
-  volumes:
-  - name: 'ssh'
-    path: /root/.ssh
