@@ -1,3 +1,4 @@
+# Use git clone.
 - name: 'gcr.io/cloud-builders/git'
   args:
   - clone
