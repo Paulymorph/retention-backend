@@ -1,7 +1,10 @@
+# Decrypt the file containing the key
 steps:
 # Use git clone.
-- name: 'gcr.io/cloud-builders/sh-agent'
+- name: 'gcr.io/cloud-builders/git'
   args:
-  - bash
-  - '-c'
-  - 'ssh-add /root/.ssh/id_rsa; git clone git@github.com:Paulymorph/retention-backend.git'
+  - clone
+  - git@github.com:Paulymorph/retention-backend
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
