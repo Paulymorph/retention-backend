@@ -113,3 +113,6 @@ class Model:
             elif len(j) == 1:
                 edges.append([j[0], None])
         return pd.DataFrame(edges).drop_duplicates()
+
+    def to_core_ml(self):
+        pass
