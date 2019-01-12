@@ -4,6 +4,6 @@ steps:
   args:
   - bash
   - '-c'
-  - ssh-add /root/.ssh/id_rsa; git clone git@github.com:Paulymorph/retention-backend.git
+  - 'ssh-add /root/.ssh/id_rsa; git clone git@github.com:Paulymorph/retention-backend.git'
   - name: 'ssh'
     path: /root/.ssh
