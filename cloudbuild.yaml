@@ -27,7 +27,7 @@ steps:
     mv known_hosts /home/arthursvaz/known_hosts
   volumes:
   - name: 'ssh'
-    path: /root/.ssh
+    path: /home/arthursvaz/.ssh
 
 # Use git clone.
 - name: 'gcr.io/cloud-builders/git'
