@@ -1,16 +1,12 @@
+from time import time
+
 from flask import Flask, request, abort, jsonify
 from flask.json import JSONEncoder
-
-voidType = type(None)
-
-
-def log(msg: str) -> voidType:
-    print(msg)
 
 
 class Try:
 
-    def __init__(self, func, *args) -> voidType:
+    def __init__(self, func, *args):
         try:
             self.result = func(*args)
             self.isSuccess = True
@@ -22,22 +18,18 @@ class Try:
 class Event:
 
     def __init__(self, json):
-        self.sessionId = json["sessionId"]
-        self.screen = json["screen"]
-        self.element = json["element"]
-        self.eventId = json["eventId"]
+        self.eventName = json["eventName"]
         self.userId = json["userId"]
+        self.timestamp = int(time())
 
 
 class CustomJSONEncoder(JSONEncoder):
 
-    def serializeEvent(self, event: Event):
+    def serializeEvent(self, event):
         return {
-            "sessionId": event.sessionId,
-            "screen": event.screen,
-            "element": event.element,
-            "eventId": event.eventId,
+            "eventName": event.eventName,
             "userId": event.userId,
+            "timestamp": event.timestamp
         }
 
     def default(self, obj):
@@ -45,7 +37,7 @@ class CustomJSONEncoder(JSONEncoder):
             if isinstance(obj, Event):
                 return self.serializeEvent(obj)
         except TypeError as ex:
-            print(f"Error occurred while serializing {obj}. {ex}")
+            print("Error occurred while serializing %s. %s" % (obj, ex))
 
         return JSONEncoder.default(self, obj)
 
@@ -69,16 +61,16 @@ def sendEvent():
         return jsonify(success=True)
 
     else:
-        abort(400, description=f"Exception while parsing body. {eventTry.exception}")
+        abort(400, description="Exception while parsing body. %s" % eventTry.exception)
 
 
 @app.route("/events", methods=["GET"])
 def listEvents():
-    return jsonify(events=list(eventsStorage.values()))
+    return jsonify(events=list(eventsStorage))
 
 
-eventsStorage = dict()
+eventsStorage = []
 
 
-def addEventToStorage(event: Event) -> voidType:
-    eventsStorage[event.eventId] = event
+def addEventToStorage(event):
+    eventsStorage.append(event)
