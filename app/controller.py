@@ -2,7 +2,7 @@ from time import time
 
 from flask import Flask, request, abort, jsonify
 from flask.json import JSONEncoder
-from model.Model import Model
+from app.model.Model import Model
 import pandas as pd
 
 
