@@ -68,7 +68,7 @@ class Model:
             train.event_name = train.event_name.apply(lambda x: ' '.join(x[:n_start_events]))
         else:
             train.event_name = train.event_name.apply(lambda x: ' '.join(x))
-            return train
+        return train
 
     def _prepare_data(self):
         x_train, x_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=42)
@@ -93,10 +93,11 @@ class Model:
             lr = LogisticRegression(penalty='l1')
             lr.fit(x_train_vec, y_train)
             self.model = lr
-        self._validate(x_test_vec, y_test)
+        # self._validate(x_test_vec, y_test)
 
     def predict_proba(self, sample):
-        return self.model.predict_proba(sample)
+        vec = self._get_vectors(sample)
+        return self.model.predict_proba(vec)
 
     def build_important_track(self):
         if self.model_type == 'logit':
