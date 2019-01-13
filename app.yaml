@@ -1,1 +1,4 @@
 runtime: python27
+api_version: 1
+threadsafe: true
+entrypoint: gunicorn -b :$PORT app:app
