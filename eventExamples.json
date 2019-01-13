@@ -1,0 +1,109 @@
+{
+  "eventExamples": [
+    {
+      "eventName": "assdf",
+      "timestamp": 1547396627,
+      "userId": 1
+    },
+    {
+      "eventName": "assdf",
+      "timestamp": 1547396630,
+      "userId": 1
+    },
+    {
+      "eventName": "aseerf",
+      "timestamp": 1547396633,
+      "userId": 1
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396635,
+      "userId": 1
+    },
+    {
+      "eventName": "assdf",
+      "timestamp": 1547396640,
+      "userId": 1
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396644,
+      "userId": 1
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396647,
+      "userId": 1
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396648,
+      "userId": 1
+    },
+    {
+      "eventName": "assdf",
+      "timestamp": 1547396653,
+      "userId": 1
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396655,
+      "userId": 1
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396656,
+      "userId": 1
+    },
+    {
+      "eventName": "leave",
+      "timestamp": 1547396756,
+      "userId": 1
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396822,
+      "userId": 0
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396841,
+      "userId": 3
+    },
+    {
+      "eventName": "asdfsdfsdf",
+      "timestamp": 1547396851,
+      "userId": 5
+    },
+    {
+      "eventName": "leave",
+      "timestamp": 1547397004,
+      "userId": 5
+    },
+    {
+      "eventName": "leaves",
+      "timestamp": 1547397073,
+      "userId": 5
+    },
+    {
+      "eventName": "leave",
+      "timestamp": 1547397268,
+      "userId": 2
+    },
+    {
+      "eventName": "leave",
+      "timestamp": 1547397462,
+      "userId": 2
+    },
+    {
+      "eventName": "leave",
+      "timestamp": 1547397589,
+      "userId": 5
+    },
+    {
+      "eventName": "leave",
+      "timestamp": 1547397649,
+      "userId": 5
+    }
+  ]
+}
