@@ -1,4 +1,4 @@
-from google.appengine.ext import vendor
+import site
+import os.path
 
-# Add any libraries installed in the "lib" folder.
-vendor.add('lib')
+site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))

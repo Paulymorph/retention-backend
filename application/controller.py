@@ -1,8 +1,8 @@
-from time import time
+from application import app
 
-from flask import Flask, request, abort, jsonify
-from flask.json import JSONEncoder
-from model.Model import Model
+from flask import request, abort, jsonify
+from core.model.Event import Event
+from core.model.Model import Model
 import pandas as pd
 
 
@@ -17,39 +17,8 @@ class Try:
             self.isSuccess = False
 
 
-class Event:
-
-    def __init__(self, json):
-        self.eventName = json["eventName"]
-        self.userId = json["userId"]
-        self.timestamp = int(time())
-
-
-class CustomJSONEncoder(JSONEncoder):
-
-    def serializeEvent(self, event):
-        return {
-            "eventName": event.eventName,
-            "userId": event.userId,
-            "timestamp": event.timestamp
-        }
-
-    def default(self, obj):
-        try:
-            if isinstance(obj, Event):
-                return self.serializeEvent(obj)
-        except TypeError as ex:
-            print("Error occurred while serializing %s. %s" % (obj, ex))
-
-        return JSONEncoder.default(self, obj)
-
-
 class ParseBodyException(ValueError):
     pass
-
-
-app = Flask(__name__)
-app.json_encoder = CustomJSONEncoder
 
 
 @app.route("/events", methods=["POST"])

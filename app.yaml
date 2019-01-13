@@ -1,7 +1,9 @@
+application: my-team-project-217908
+version: 1
 runtime: python27
 api_version: 1
-threadsafe: true
+threadsafe: yes
 
 handlers:
-- url: /.*
-  script: app.app
+- url: .*
+  script: main.application.app
