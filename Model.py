@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.metrics import roc_auc_score, average_precision_score, precision_recall_curve, roc_curve
 from sklearn.model_selection import train_test_split
+import coremltools
 
 
 def str_agg(x):
@@ -115,4 +116,4 @@ class Model:
         return pd.DataFrame(edges).drop_duplicates()
 
     def to_core_ml(self):
-        pass
+        coremltools.converters.sklearn.convert(self.model)
