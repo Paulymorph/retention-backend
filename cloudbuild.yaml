@@ -1,7 +1,4 @@
-# Decrypt the file containing the key
 steps:
-# Use git clone.
-- name: 'gcr.io/cloud-builders/git'
-  args:
-  - clone
-  - git@github.com:Paulymorph/retention-backend
+- name: "gcr.io/cloud-builders/gcloud"
+  args: ["app", "deploy"]
+timeout: "1600s"
