@@ -1,5 +1,5 @@
-runtime: python
+runtime: python27
 entrypoint: gunicorn -b :$PORT app:app
 
 runtime_config:
-  python_version: 27
+  python_version: 2
