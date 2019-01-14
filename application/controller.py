@@ -21,6 +21,11 @@ class ParseBodyException(ValueError):
     pass
 
 
+@app.route("/", methods=["GET"])
+def test():
+    return "Trigger worked success"
+
+
 @app.route("/events", methods=["POST"])
 def sendEvent():
     body = request.get_json()
