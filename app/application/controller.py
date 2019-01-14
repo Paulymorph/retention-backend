@@ -1,8 +1,8 @@
-from application import app
+from app.application import app
 
 from flask import request, abort, jsonify
-from core.model.Event import Event
-from core.model.Model import Model
+from app.core.model.Event import Event
+from app.core.model.Model import Model
 import pandas as pd
 
 
