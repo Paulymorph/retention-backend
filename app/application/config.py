@@ -1,5 +1,5 @@
 from flask.json import JSONEncoder
-from app.core.model.Event import Event
+from core.model.Event import Event
 
 
 class CustomJSONEncoder(JSONEncoder):
