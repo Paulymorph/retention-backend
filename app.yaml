@@ -1,9 +1,9 @@
 application: my-team-project-217908
-version: 1
-runtime: python27
-api_version: 1
-threadsafe: yes
+version: 2
+runtime: python
+env: flex
+entrypoint: gunicorn -b :$PORT main:app
 
-handlers:
-- url: .*
-  script: main.application.app
+runtime_config:
+  # You can also specify 2 for Python 2.7
+  python_version: 3
