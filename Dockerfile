@@ -19,4 +19,4 @@ ADD . /app
 
 # Run a WSGI server to serve the application. gunicorn must be declared as
 # a dependency in requirements.txt.
-CMD gunicorn -b :8080 app:app
+CMD gunicorn -b :$PORT app:app
