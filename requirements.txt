@@ -1,0 +1,7 @@
+flask==1.0.2
+gunicorn==19.3.0
+numpy==1.14.1
+pandas==0.23.4
+scikit-learn==0.19.2
+coremltools==2.0
+scipy==1.2.0
