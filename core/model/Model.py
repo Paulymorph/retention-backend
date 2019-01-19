@@ -117,4 +117,4 @@ class Model:
         return pd.DataFrame(edges).drop_duplicates()
 
     def to_core_ml(self):
-        return coremltools.converters.sklearn.convert(self.model)
+        coremltools.converters.sklearn.convert(self.model)
