@@ -6,6 +6,11 @@ from models.tryFile import Try
 from service import addEventToStorage, eventsStorage, modelHolder, loadEventExamples
 
 
+@flaskApp.before_first_request
+def preLoad():
+    loadEventExamples()
+
+
 @flaskApp.route("/events", methods=["POST"])
 def sendEvent():
     body = request.get_json()
@@ -38,6 +43,7 @@ def predict():
     return jsonify(proba=str(prediction))
 
 
-@flaskApp.before_first_request
-def preLoad():
-    loadEventExamples()
+@flaskApp.route("/getModel", methods=["GET"])
+def getModel():
+    coreMlModel = modelHolder.getModel().to_core_ml()
+    return jsonify(coreMlModel)
