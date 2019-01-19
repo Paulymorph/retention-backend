@@ -1,6 +1,6 @@
 import pandas as pd
 
-from models import Event
+from models.event import Event
 from predictionModel import Model
 
 eventsStorage = []
@@ -16,13 +16,11 @@ def loadEventExamples():
 
 
 def eventsToDataframe(events):
-    # print(events)
     event_names = list(map(lambda x: x.eventName, events))
     event_timestamps = list(map(lambda x: x.timestamp, events))
     user_ids = list(map(lambda x: x.userId, events))
     data = {'event_name': event_names, 'event_timestamp': event_timestamps, 'user_pseudo_id': user_ids}
     df = pd.DataFrame.from_dict(data)
-    # print (df)
     return df
 
 
