@@ -4,3 +4,7 @@ entrypoint: gunicorn -b :$PORT main:flaskApp
 
 runtime_config:
   python_version: 2
+
+automatic_scaling:
+  max_num_instances: 1
+  
