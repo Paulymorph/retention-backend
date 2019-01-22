@@ -43,7 +43,9 @@ def predict():
     return jsonify(proba=str(prediction))
 
 
-@flaskApp.route("/getModel", methods=["GET"])
+@flaskApp.route("/model", methods=["GET"])
 def getModel():
     coreMlModel = modelHolder.getModel().to_core_ml()
-    return jsonify(coreMlModel)
+    spec = coreMlModel.get_spec()
+    serialized = spec.SerializeToString()
+    return serialized
