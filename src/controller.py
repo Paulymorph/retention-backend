@@ -1,4 +1,4 @@
-from flask import jsonify, request, abort, send_from_directory
+from flask import jsonify, request, abort, send_from_directory, send_file
 
 from app import flaskApp
 from models.event import Event
@@ -9,6 +9,13 @@ import os
 
 modelsFolder = os.path.abspath("models")
 
+from flask_swagger_ui import get_swaggerui_blueprint
+swaggerUiUrl = '/api/docs'
+swaggerApiSpecUrl = '/swagger.yaml'
+swaggerui_blueprint = get_swaggerui_blueprint(
+    swaggerUiUrl,
+    swaggerApiSpecUrl)
+flaskApp.register_blueprint(swaggerui_blueprint, url_prefix=swaggerUiUrl)
 
 @flaskApp.before_first_request
 def preLoad():
@@ -73,3 +80,8 @@ def getModel():
 def getSavedModel(modelName):
     fileName = "%s.mlmodel" % modelName
     return send_from_directory(modelsFolder, fileName, attachment_filename = fileName)
+
+
+@flaskApp.route("/swagger.yaml", methods=["GET"])
+def swagger():
+    return send_file("resources/swagger.yaml")

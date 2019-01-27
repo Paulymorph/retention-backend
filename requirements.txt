@@ -5,3 +5,4 @@ pandas==0.23.4
 scikit-learn==0.19.2
 coremltools==2.0
 scipy==1.2.0
+flask-swagger-ui==3.18.0
