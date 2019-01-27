@@ -31,7 +31,7 @@ class Model:
         self.target = self.data.target.values
         self.users = self.data.user_pseudo_id.values
         self.emb_type = emb_type
-        self._embedder = embedder
+        self.embedder = embedder
         self.ngram_range = ngram_range
         self.roc_auc_score = None
         self.average_precision_score = None
@@ -46,13 +46,13 @@ class Model:
     def _get_vectors(self, sample):
         if self._fit_vec:
             self._fit_vectors(sample)
-        return self._embedder.transform(sample)
+        return self.embedder.transform(sample)
 
     def _fit_vectors(self, sample):
         if self.emb_type == 'tf-idf':
             from sklearn.feature_extraction.text import TfidfVectorizer
             tfidf = TfidfVectorizer(ngram_range=self.ngram_range)
-            self._embedder = tfidf.fit(sample)
+            self.embedder = tfidf.fit(sample)
             self._fit_vec = False
 
     def _prepare_dataset(self, df, target_event, event_filter=None, n_start_events=None):
@@ -103,7 +103,7 @@ class Model:
         if self.model_type == 'logit':
             imp = self.model.coef_
         if self.emb_type == 'tf-idf':
-            imp = self._embedder.inverse_transform(imp)[0]
+            imp = self.embedder.inverse_transform(imp)[0]
         edges = []
         for i in imp:
             j = i.split()

@@ -1,13 +1,19 @@
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, send_from_directory
 
 from app import flaskApp
 from models.event import Event
 from models.tryFile import Try
 from service import addEventToStorage, eventsStorage, modelHolder, loadEventExamples
 
+import os
+
+modelsFolder = os.path.abspath("models")
+
 
 @flaskApp.before_first_request
 def preLoad():
+    if not os.path.exists(modelsFolder):
+        os.makedirs(modelsFolder)
     loadEventExamples()
 
 
@@ -45,7 +51,25 @@ def predict():
 
 @flaskApp.route("/model", methods=["GET"])
 def getModel():
-    coreMlModel = modelHolder.getModel().to_core_ml()
-    spec = coreMlModel.get_spec()
-    serialized = spec.SerializeToString()
-    return serialized
+    modelName = "retention_model"
+    modelFile = "%s/%s.mlmodel" % (modelsFolder, modelName)
+    model = modelHolder.getModel()
+    model.to_core_ml().save(modelFile)
+    inputTransformer = model.embedder
+    embedderVocabulary = [word for (word, index) in sorted(inputTransformer.vocabulary_.items(), key = lambda i: i[1])]
+    response = {
+        "model": modelName,
+        "transformer": {
+            "type": "tf-idf",
+            "idf": list(inputTransformer.idf_),
+            "vocabulary": embedderVocabulary
+        }
+    }
+
+    return jsonify(response)
+
+
+@flaskApp.route("/model/<modelName>", methods=["GET"])
+def getSavedModel(modelName):
+    fileName = "%s.mlmodel" % modelName
+    return send_from_directory(modelsFolder, fileName, attachment_filename = fileName)
