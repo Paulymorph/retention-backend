@@ -1,0 +1,91 @@
+swagger: "2.0"
+info:
+  title: Retention API
+  description: API for sending logs and retrieving trained model
+  version: 0.1.0
+paths:
+  /events:
+    post:
+      summary: Send a user event
+      parameters:
+        - in: body
+          name: event
+          schema:
+            $ref: '#/definitions/Event'
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Success'
+        400:
+          description: No body provided or wrong model
+  /model:
+    get:
+      summary: Get trained model and its embedder
+      responses:
+        200:
+          description: The model meta info
+          schema:
+            $ref: '#/definitions/Model'
+  /model/{modelName}:
+    get:
+      summary: Retrieve .mlmodel model
+      parameters:
+        - in: path
+          name: modelName
+          type: string
+          required: true
+          default: 'retention_model'
+      responses:
+        200:
+          description: The model serialized to coreml file
+definitions:
+  Success:
+    properties:
+      success:
+        type: boolean
+    required:
+      - success
+  Event:
+    properties:
+      eventName:
+        description: Name of the user event
+        type: string
+        example: "push_login_button"
+      userId:
+        description: Id of a user
+        type: integer
+        example: 1
+      timestamp:
+        description: Time of the event
+        type: integer
+        example: 1547396627
+    required:
+      - eventName
+      - userId
+  Model:
+    properties:
+      model:
+        description: Name of the model to fetch further
+        type: string
+        example: retention_model
+      transformer:
+        type: object
+        properties:
+          type:
+            description: Type of the model
+            type: string
+            example: tf-idf
+          idf:
+            type: array
+            description: The idf of vocabulary. idf[i] states for word vocabulary[i]
+            items:
+              type: number
+          vocabulary:
+            type: array
+            description: Words of the transformer
+            items:
+              type: string
+    required:
+      - model
+      - transformer
