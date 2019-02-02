@@ -13,5 +13,6 @@ flaskApp.config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', False)
 
 db = SQLAlchemy()
 db.init_app(flaskApp)
+flaskApp.app_context().push()
 
 import controller

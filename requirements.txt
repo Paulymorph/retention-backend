@@ -7,3 +7,4 @@ coremltools==2.0
 scipy==1.2.0
 flask-swagger-ui==3.18.0
 Flask-SQLAlchemy==2.3.2
+psycopg2==2.7
