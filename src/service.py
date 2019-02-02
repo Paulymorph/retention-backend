@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import MetaData, Table, Column, Integer, select, func
+from sqlalchemy import MetaData, Table, Column, Integer
 
 from src.app import db
 from models.event import Event
@@ -12,16 +12,6 @@ event_table = Table('events', meta,
                     Column('event_name', Integer),
                     Column('event_time', Integer),
                     Column('user_id', Integer))
-# eventsStorage = []
-
-
-# def loadEventExamples():
-#     import json
-#     with open("eventExamples.json") as f:
-#         data = json.load(f)
-#         events = data.get("eventExamples", [])
-#         for ev in events:
-#             add_event_to_storage(Event(ev))
 
 
 def eventsToDataframe(events):
