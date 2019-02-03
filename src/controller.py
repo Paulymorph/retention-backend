@@ -17,12 +17,6 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     swaggerApiSpecUrl)
 flaskApp.register_blueprint(swaggerui_blueprint, url_prefix=swaggerUiUrl)
 
-# @flaskApp.before_first_request
-# def preLoad():
-#     if not os.path.exists(modelsFolder):
-#         os.makedirs(modelsFolder)
-#     loadEventExamples()
-
 
 @flaskApp.route("/events", methods=["POST"])
 def sendEvent():
