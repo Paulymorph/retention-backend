@@ -10,7 +10,7 @@ class Event(object):
 
     @classmethod
     def init_from_json(cls, json):
-        return cls(json["eventName"], json["userId"], json.get("timestamp", int(time())))
+        return cls(json["eventName"], json.get("timestamp", int(time())), json["userId"])
 
     @classmethod
     def init_from_query(cls, query):

@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import MetaData, Table, Column, Integer, BIGINT
+from sqlalchemy import MetaData, Table, Column, BIGINT, String
 
 from src.app import db
 from models.event import Event
@@ -9,9 +9,9 @@ engine = db.engine
 meta = MetaData(engine)
 
 event_table = Table('events', meta,
-                    Column('event_name', Integer),
+                    Column('event_name', String),
                     Column('event_time', BIGINT),
-                    Column('user_id', Integer))
+                    Column('user_id', BIGINT))
 
 def eventsToDataframe(events):
     event_names = list(map(lambda x: x.eventName, events))
