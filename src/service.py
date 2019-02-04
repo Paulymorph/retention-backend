@@ -1,19 +1,17 @@
 import pandas as pd
+from sqlalchemy import MetaData, Table, Column, BIGINT, String
 
+from src.app import db
 from models.event import Event
 from predictionModel import Model
 
-eventsStorage = []
+engine = db.engine
+meta = MetaData(engine)
 
-
-def loadEventExamples():
-    import json
-    with open("eventExamples.json") as f:
-        data = json.load(f)
-        events = data.get("eventExamples", [])
-        for ev in events:
-            addEventToStorage(Event(ev))
-
+event_table = Table('events', meta,
+                    Column('event_name', String),
+                    Column('event_time', BIGINT),
+                    Column('user_id', BIGINT))
 
 def eventsToDataframe(events):
     event_names = list(map(lambda x: x.eventName, events))
@@ -24,8 +22,23 @@ def eventsToDataframe(events):
     return df
 
 
-def addEventToStorage(event):
-    eventsStorage.append(event)
+def add_event_to_storage(event):
+    statement = event_table.insert().values(event_name=event.eventName, event_time=event.timestamp, user_id=event.userId)
+    engine.execute(statement)
+
+
+# Get all events from database
+def get_events_from_storage():
+    statement = event_table.select()
+    results = engine.execute(statement)
+    return list(map(lambda q: Event.init_from_query(q), results))
+
+
+# Get total events count
+def get_events_count():
+    statement = event_table.count()
+    res = engine.execute(statement)
+    return next(res)[0]
 
 
 class ModelHolder:
@@ -38,9 +51,10 @@ class ModelHolder:
         return self.model
 
     def trainModel(self):
-        if len(eventsStorage) > 10:
+        if get_events_count() > 10:
             print("Start training model")
-            model = Model(eventsToDataframe(eventsStorage), 'leave')
+            events = get_events_from_storage()
+            model = Model(eventsToDataframe(events), 'leave')
             model.fit_model()
             self.model = model
 

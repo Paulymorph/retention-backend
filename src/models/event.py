@@ -3,10 +3,18 @@ from time import time
 
 class Event(object):
 
-    def __init__(self, json):
-        self.eventName = json["eventName"]
-        self.userId = json["userId"]
-        self.timestamp = json.get("timestamp", int(time()))
+    def __init__(self, event_name, timestamp, user_id):
+        self.eventName = event_name
+        self.userId = user_id
+        self.timestamp = timestamp
+
+    @classmethod
+    def init_from_json(cls, json):
+        return cls(json["eventName"], json.get("timestamp", int(time())), json["userId"])
+
+    @classmethod
+    def init_from_query(cls, query):
+        return cls(query[0], query[1], query[2])
 
     def serialize(self):
         return {
