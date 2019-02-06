@@ -27,7 +27,7 @@ LOCAL_SQLALCHEMY_DATABASE_URI = (
 # When running on App Engine a unix socket is used to connect to the cloudsql
 # instance.
 LIVE_SQLALCHEMY_DATABASE_URI = (
-    'postgresql://{user}:{password}@localhost/{database}'
+    'postgresql://{user}:{password}@/{database}'
     '?host=/cloudsql/{connection_name}').format(
         user=CLOUDSQL_USER, password=CLOUDSQL_PASSWORD,
         database=CLOUDSQL_DATABASE, connection_name=CLOUDSQL_CONNECTION_NAME)
