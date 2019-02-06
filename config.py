@@ -6,7 +6,7 @@ PROJECT_ID = 'my-team-project-217908'
 # CloudSQL & SQLAlchemy configuration
 CLOUDSQL_USER = 'postgres'
 # Fill db user password
-CLOUDSQL_PASSWORD = ''
+CLOUDSQL_PASSWORD = '8NfEx2ex7N2BBmrf'
 CLOUDSQL_DATABASE = 'retention'
 CLOUDSQL_CONNECTION_NAME = 'my-team-project-217908:europe-west1:retention'
 
