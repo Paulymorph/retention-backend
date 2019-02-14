@@ -18,7 +18,7 @@ CLOUDSQL_CONNECTION_NAME = 'my-team-project-217908:europe-west1:retention'
 # Port 3306 is the standard MySQL port. If you need to use a different port,
 # change the 3306 to a different port number.
 
-# Alternatively, you could use a local MySQL instance for testing.
+# Alternatively, you could use a local instance for testing.
 LOCAL_SQLALCHEMY_DATABASE_URI = (
     'postgresql://{user}:{password}@127.0.0.1:5432/{database}').format(
         user=CLOUDSQL_USER, password=CLOUDSQL_PASSWORD,
@@ -27,8 +27,7 @@ LOCAL_SQLALCHEMY_DATABASE_URI = (
 # When running on App Engine a unix socket is used to connect to the cloudsql
 # instance.
 LIVE_SQLALCHEMY_DATABASE_URI = (
-    'postgresql://{user}:{password}@/{database}'
-    '?host=/cloudsql/{connection_name}').format(
+    'postgresql+psycopg2://{user}:{password}@/{database}?host=/cloudsql/{connection_name}').format(
         user=CLOUDSQL_USER, password=CLOUDSQL_PASSWORD,
         database=CLOUDSQL_DATABASE, connection_name=CLOUDSQL_CONNECTION_NAME)
 
