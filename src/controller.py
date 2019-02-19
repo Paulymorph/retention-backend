@@ -8,6 +8,8 @@ from service import add_event_to_storage, modelHolder, get_events_from_storage
 import os
 
 modelsFolder = os.path.abspath("models")
+if not os.path.exists(modelsFolder):
+    os.makedirs(modelsFolder)
 
 from flask_swagger_ui import get_swaggerui_blueprint
 swaggerUiUrl = '/api/docs'
