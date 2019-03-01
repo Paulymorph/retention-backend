@@ -12,6 +12,11 @@ paths:
           name: event
           schema:
             $ref: '#/definitions/Event'
+        - in: body
+          name: events
+          type: array
+          items:
+            $ref: '#/definitions/Event'
       responses:
         200:
           description: Success

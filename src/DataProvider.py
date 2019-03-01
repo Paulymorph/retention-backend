@@ -24,8 +24,19 @@ class DataProvider:
         return df
 
     def add_event(self, event):
-        statement = self._event_table.insert().values(event_name=event.eventName, event_time=event.timestamp, user_id=event.userId)
-        self._engine.execute(statement)
+        if type(event) is list:
+            statement = self._event_table.insert()
+            keys_map = {'eventName': 'event_name', 'timestamp': 'event_time', 'userId': 'user_id'}
+
+            def to_database(event):
+                event_dict = event.__dict__
+                return {keys_map[old_key]: value for old_key, value in event_dict.items()}
+
+            events = list(map(to_database, event))
+            self._engine.execute(statement, events)
+        else:
+            statement = self._event_table.insert().values(event_name=event.eventName, event_time=event.timestamp, user_id=event.userId)
+            self._engine.execute(statement)
 
     def get_events(self):
         statement = self._event_table.select()
