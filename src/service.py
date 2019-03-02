@@ -11,9 +11,9 @@ class ModelHolder:
         return self.model
 
     def train_model(self):
-        if len(self.data_provider.get_events_count) > 10:
+        if self.data_provider.get_events_count > 10:
             print("Start training model")
             events = self.data_provider.get_events()
-            model = Model(self.data_provider.eventsToDataframe(events), 'leave')
+            model = Model(self.data_provider.events_to_dataframe(events), 'leave')
             model.fit_model()
             self.model = model
