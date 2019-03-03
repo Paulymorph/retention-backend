@@ -3,10 +3,13 @@ from flask import jsonify, request, abort, send_from_directory, send_file
 from app import flaskApp
 from models.event import Event
 from models.tryFile import Try
-from service import add_event_to_storage, modelHolder, get_events_from_storage
+from service import ModelHolder
+from src.DataProvider import DataProvider
+
+data_provider = DataProvider()
+model_holder = ModelHolder(data_provider)
 
 import os
-
 modelsFolder = os.path.abspath("models")
 if not os.path.exists(modelsFolder):
     os.makedirs(modelsFolder)
@@ -21,29 +24,29 @@ flaskApp.register_blueprint(swaggerui_blueprint, url_prefix=swaggerUiUrl)
 
 
 @flaskApp.route("/events", methods=["POST"])
-def sendEvent():
+def send_event():
     body = request.get_json()
     if body is None:
         abort(400, description="No body provided")
-    eventTry = Try(Event.init_from_json, body)
-    if eventTry.isSuccess:
-        add_event_to_storage(eventTry.result)
-        modelHolder.trainModel()
+    event_try = Try(Event.init_from_json, body)
+    if event_try.isSuccess:
+        data_provider.add_event(event_try.result)
+        model_holder.train_model()
         return jsonify(success=True)
 
     else:
-        abort(400, description="Exception while parsing body. %s" % eventTry.exception)
+        abort(400, description="Exception while parsing body. %s" % event_try.exception)
 
 
 @flaskApp.route("/events", methods=["GET"])
-def listEvents():
-    events = get_events_from_storage()
+def list_events():
+    events = data_provider.get_events()
     return jsonify(events=events)
 
 
 @flaskApp.route("/model/prediction", methods=["GET"])
 def predict():
-    model = modelHolder.getModel()
+    model = model_holder.get_model()
 
     sample = request.args.get('sample', type=str)
     if sample is None:
@@ -54,29 +57,29 @@ def predict():
 
 
 @flaskApp.route("/model", methods=["GET"])
-def getModel():
-    modelName = "retention_model"
-    modelFile = "%s/%s.mlmodel" % (modelsFolder, modelName)
-    model = modelHolder.getModel()
-    model.to_core_ml().save(modelFile)
-    inputTransformer = model.embedder
-    embedderVocabulary = [word for (word, index) in sorted(inputTransformer.vocabulary_.items(), key = lambda i: i[1])]
+def get_model():
+    model_name = "retention_model"
+    model_file = "%s/%s.mlmodel" % (modelsFolder, model_name)
+    model = model_holder.get_model()
+    model.to_core_ml().save(model_file)
+    input_transformer = model.embedder
+    embedder_vocabulary = [word for (word, index) in sorted(input_transformer.vocabulary_.items(), key=lambda i: i[1])]
     response = {
-        "model": modelName,
+        "model": model_name,
         "transformer": {
             "type": "tf-idf",
-            "idf": list(inputTransformer.idf_),
-            "vocabulary": embedderVocabulary
+            "idf": list(input_transformer.idf_),
+            "vocabulary": embedder_vocabulary
         }
     }
 
     return jsonify(response)
 
 
-@flaskApp.route("/model/<modelName>", methods=["GET"])
-def getSavedModel(modelName):
-    fileName = "%s.mlmodel" % modelName
-    return send_from_directory(modelsFolder, fileName, attachment_filename = fileName)
+@flaskApp.route("/model/<model_name>", methods=["GET"])
+def get_saved_model(model_name):
+    file_name = "%s.mlmodel" % model_name
+    return send_from_directory(modelsFolder, file_name, attachment_filename=file_name)
 
 
 @flaskApp.route("/swagger.yaml", methods=["GET"])
