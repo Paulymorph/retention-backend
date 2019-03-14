@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 from sklearn.metrics import roc_auc_score, average_precision_score, precision_recall_curve, roc_curve
 from sklearn.model_selection import train_test_split
@@ -80,8 +82,8 @@ class Model:
         preds = self.model.predict_proba(x_test_vec)
         self.roc_auc_score = roc_auc_score(y_test, preds[:, 1])
         self.average_precision_score = average_precision_score(y_test, preds[:, 1])
-        print('ROC-AUC: {:.4f}'.format(self.roc_auc_score))
-        print('PR-AUC: {:.4f}'.format(self.average_precision_score))
+        logging.debug('ROC-AUC: {:.4f}'.format(self.roc_auc_score))
+        logging.debug('PR-AUC: {:.4f}'.format(self.average_precision_score))
         self.roc_c = roc_curve(y_test, preds[:, 1])
         self.prec_rec = precision_recall_curve(y_test, preds[:, 1])
 
@@ -93,7 +95,6 @@ class Model:
             lr = LogisticRegression(penalty='l1')
             lr.fit(x_train_vec, y_train)
             self.model = lr
-        # self._validate(x_test_vec, y_test)
 
     def predict_proba(self, sample):
         vec = self._get_vectors(sample)

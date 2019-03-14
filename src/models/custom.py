@@ -1,3 +1,5 @@
+import logging
+
 from flask.json import JSONEncoder
 
 from src.models.event import Event
@@ -18,6 +20,6 @@ class CustomJSONEncoder(JSONEncoder):
 
             raise RuntimeError("Not defined serialization for %s %s" % (type(obj), obj))
         except TypeError as ex:
-            print("Error occurred while serializing %s. %s" % (obj, ex))
+            logging.warn("Error occurred while serializing %s. %s" % (obj, ex))
 
         return JSONEncoder.default(self, obj)

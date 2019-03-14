@@ -5,22 +5,24 @@ from models.event import Event
 from models.tryFile import Try
 from service import ModelHolder
 from src.DataProvider import DataProvider
+from src.retentioneering.utils import Config
 
 data_provider = DataProvider()
-model_holder = ModelHolder(data_provider)
+model_settings = Config('./src/resources/settings_yaml.yaml')
+model_holder = ModelHolder(data_provider, model_settings)
 
 import os
-modelsFolder = os.path.abspath("models")
-if not os.path.exists(modelsFolder):
-    os.makedirs(modelsFolder)
+models_folder = os.path.abspath("models")
+if not os.path.exists(models_folder):
+    os.makedirs(models_folder)
 
 from flask_swagger_ui import get_swaggerui_blueprint
-swaggerUiUrl = '/api/docs'
-swaggerApiSpecUrl = '/swagger.yaml'
+swagger_ui_url = '/api/docs'
+swagger_api_spec_url = '/swagger.yaml'
 swaggerui_blueprint = get_swaggerui_blueprint(
-    swaggerUiUrl,
-    swaggerApiSpecUrl)
-flaskApp.register_blueprint(swaggerui_blueprint, url_prefix=swaggerUiUrl)
+    swagger_ui_url,
+    swagger_api_spec_url)
+flaskApp.register_blueprint(swaggerui_blueprint, url_prefix=swagger_ui_url)
 
 
 @flaskApp.route("/events", methods=["POST"])
@@ -31,7 +33,6 @@ def send_event():
     event_try = Try(Event.init_from_json, body)
     if event_try.isSuccess:
         data_provider.add_event(event_try.result)
-        model_holder.train_model()
         return jsonify(success=True)
 
     else:
@@ -59,7 +60,8 @@ def predict():
 @flaskApp.route("/model", methods=["GET"])
 def get_model():
     model_name = "retention_model"
-    model_file = "%s/%s.mlmodel" % (modelsFolder, model_name)
+    model_file = "%s/%s.mlmodel" % (models_folder, model_name)
+    model_holder.train_model()
     model = model_holder.get_model()
     model.to_core_ml().save(model_file)
     input_transformer = model.embedder
@@ -79,7 +81,7 @@ def get_model():
 @flaskApp.route("/model/<model_name>", methods=["GET"])
 def get_saved_model(model_name):
     file_name = "%s.mlmodel" % model_name
-    return send_from_directory(modelsFolder, file_name, attachment_filename=file_name)
+    return send_from_directory(models_folder, file_name, attachment_filename=file_name)
 
 
 @flaskApp.route("/swagger.yaml", methods=["GET"])
