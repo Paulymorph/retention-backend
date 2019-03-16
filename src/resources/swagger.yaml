@@ -59,12 +59,12 @@ definitions:
         example: "push_login_button"
       userId:
         description: Id of a user
-        type: integer
-        example: 1
+        type: string
+        example: "86381b00-abab-4cb3-aad5-0f7bdea10db3"
       timestamp:
         description: Time of the event
-        type: integer
-        example: 1547396627
+        type: string
+        example: "2019-03-16 22:28:24.639417"
     required:
       - eventName
       - userId
