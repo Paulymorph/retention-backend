@@ -1,4 +1,4 @@
-from time import time
+from datetime import datetime
 
 
 class Event(object):
@@ -13,7 +13,7 @@ class Event(object):
         if type(json) is list:
             return list(map(cls.init_from_json, json))
         else:
-            return cls(json["eventName"], json.get("timestamp", int(time())), json["userId"])
+            return cls(json["eventName"], json.get("timestamp", datetime.now()), json["userId"])
 
     @classmethod
     def init_from_query(cls, query):

@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import MetaData, Table, Column, String, BIGINT
+from sqlalchemy import MetaData, Table, Column, String, DateTime
 
 from src.app import db
 from src.models.event import Event
@@ -11,8 +11,8 @@ class DataProvider:
         self._meta = MetaData(self._engine)
         self._event_table = Table('events', self._meta,
                                   Column('event_name', String),
-                                  Column('event_time', BIGINT),
-                                  Column('user_id', BIGINT))
+                                  Column('event_time', DateTime),
+                                  Column('user_id', String))
 
     @staticmethod
     def events_to_dataframe(events):
