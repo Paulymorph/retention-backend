@@ -6,10 +6,15 @@ positive_event:
   # filters for events
   filters:
     # filters for events that are in full_match
-    full_match:
-    - facebook_login_pressed
-    - signup_pressed
-    - login_pressed
+    lostUser:
+      full_match:
+        - facebook_login_pressed
+        - signup_pressed
+        - login_pressed
+    buyPremium:
+      full_match:
+        - premium_bought
+
 negative_event:
   # group name
   name: lost
