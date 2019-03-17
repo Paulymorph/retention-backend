@@ -12,11 +12,13 @@ model_settings = Config('./src/resources/settings_yaml.yaml')
 model_holder = ModelHolder(data_provider, model_settings)
 
 import os
+
 models_folder = os.path.abspath("models")
 if not os.path.exists(models_folder):
     os.makedirs(models_folder)
 
 from flask_swagger_ui import get_swaggerui_blueprint
+
 swagger_ui_url = '/api/docs'
 swagger_api_spec_url = '/swagger.yaml'
 swaggerui_blueprint = get_swaggerui_blueprint(
@@ -45,24 +47,19 @@ def list_events():
     return jsonify(events=events)
 
 
-@flaskApp.route("/model/prediction", methods=["GET"])
-def predict():
-    model = model_holder.get_model()
-
-    sample = request.args.get('sample', type=str)
-    if sample is None:
-        abort(400, "Value of `sample` is not defined.")
-
-    prediction = model.predict_proba([sample])[0]
-    return jsonify(proba=str(prediction))
-
-
 @flaskApp.route("/model", methods=["GET"])
 def get_model():
-    model_name = "retention_model"
+    model_name = request.args.get('name', type=str)
+    if model_name is None:
+        abort(400, description="No name of model provided")
+
+    _ = model_holder.train_model(model_name)
+    model = model_holder.get_model(model_name)
+
+    if model is None:
+        abort(400, description="No trained model with name %s" % model_name)
+
     model_file = "%s/%s.mlmodel" % (models_folder, model_name)
-    model_holder.train_model()
-    model = model_holder.get_model()
     model.to_core_ml().save(model_file)
     input_transformer = model.embedder
     embedder_vocabulary = [word for (word, index) in sorted(input_transformer.vocabulary_.items(), key=lambda i: i[1])]

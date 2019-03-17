@@ -3,25 +3,21 @@ import logging
 import pandas as pd
 
 
-def drop_duplicated_events(df, duplicate_thr_time=0, settings=None):
+def drop_duplicated_events(df, duplicate_thr_time):
     """
     Delete duplicated events (two events with save event names if the time between them less than duplicate_thr_time).
 
     :param df: input pd.DataFrame
     :param duplicate_thr_time: threshold for time between events
-    :param settings: config dict
 
     :type df: pd.DataFrame
     :type duplicate_thr_time: int
-    :type settings: dict
     :return: self
     :rtype: pd.DataFrame
     """
     logging.info('Start. Shape: {}'.format(df.shape))
     df = df.sort_values(['user_pseudo_id', 'event_timestamp'])
     is_first_iter = 1
-    if settings is not None:
-        duplicate_thr_time = settings.get('events', {}).get('duplicate_thr_time', 0)
     duplicated_rows = None
 
     while is_first_iter or duplicated_rows.sum() != 0:
@@ -32,7 +28,7 @@ def drop_duplicated_events(df, duplicate_thr_time=0, settings=None):
         df.loc[:, 'prev_user'] = df.user_pseudo_id.shift(1)
         df.loc[:, 'prev_event_name'] = df.event_name.shift(1)
 
-        duplicated_rows = (((df.event_timestamp - df.prev_timestamp) <= duplicate_thr_time) &
+        duplicated_rows = (((df.event_timestamp - df.prev_timestamp).map(lambda x: x.seconds) <= duplicate_thr_time) &
                            (df.prev_event_name == df.event_name) &
                            (df.prev_user == df.user_pseudo_id))
     logging.info('Done. Shape: {}'.format(df.shape))
@@ -40,22 +36,18 @@ def drop_duplicated_events(df, duplicate_thr_time=0, settings=None):
     return df
 
 
-def filter_users(df, filters=list(), settings=None):
+def filter_users(df, filters):
     """
     Apply filters to users from the input table and leave all events for the received users.
 
     :param df: input pd.DataFrame
     :param filters: list each element of which is a filter dict
-    :param settings: config dict
 
     :type df: pd.DataFrame
     :type filters: list
-    :type settings: dict
     :return: pd.DataFrame
     """
     logging.info('Start. Shape: {}'.format(df.shape))
-    if settings is not None:
-        filters = settings.get('users', {}).get('filters', [])
     conditions = _filter_conditions(df, filters)
     if conditions is not None:
         df = df.loc[df.user_pseudo_id.isin(df.loc[conditions, 'user_pseudo_id']), :].copy()
@@ -63,23 +55,19 @@ def filter_users(df, filters=list(), settings=None):
     return df
 
 
-def filter_events(df, filters=list(), settings=None):
+def filter_events(df, filters):
     """
     Apply filters to the input table.
 
     :param df: input pd.DataFrame
     :param filters: list each element of which is a filter dict
-    :param settings: config dict
 
     :type df: pd.DataFrame
     :type filters: list
-    :type settings: dict
     :return: self
     :rtype: pd.DataFrame
     """
     logging.info('Start. Shape: {}'.format(df.shape))
-    if settings is not None:
-        filters = settings.get('events', {}).get('filters', [])
     conditions = _filter_conditions(df, filters)
     if conditions is not None:
         df = df.loc[conditions, :].copy()
@@ -106,26 +94,22 @@ def _filter_conditions(df, filters):
     return conditions
 
 
-def add_passed_event(df, positive_event_name=u'passed', filters=None, settings=None):
+def add_passed_event(df, positive_event_name, filters):
+    # type: (pd.DataFrame, str, dict) -> pd.DataFrame
     """
     Add new events with `positive_event_name` and delete all events after.
 
     :param df: input pd.DataFrame
     :param positive_event_name: name of the positive event which should be added if filter conditions is True
     :param filters: dict with filter conditions
-    :param settings: dict
 
     :type df: pd.DataFrame
     :type positive_event_name: str
     :type filters: dict
-    :type settings: config dict
     :return: self
     :rtype: pd.DataFrame
     """
     logging.info('Start. Shape: {}'.format(df.shape))
-    if settings is not None:
-        positive_event_name = settings.get('positive_event', {}).get('name', u'passed')
-        filters = settings.get('positive_event', {}).get('filters', None)
     if filters is None:
         logging.info('Done. Shape: {}'.format(df.shape))
         return df
@@ -155,27 +139,22 @@ def add_passed_event(df, positive_event_name=u'passed', filters=None, settings=N
     logging.info('Done. Shape: {}'.format(df.shape))
     return df
 
-
-def add_lost_events(df, positive_event_name=u'passed', negative_event_name=u'lost', settings=None):
+_minumum_time_delta = pd.Timedelta(seconds=1)
+def add_lost_events(df, positive_event_name, negative_event_name):
     """
     Add new events with `negative_event_name` in input DataFrame.
 
     :param df: input pd.DataFrame
     :param positive_event_name: positive event name
     :param negative_event_name: negative event name which should be added if there is no positive event in the session
-    :param settings: config dict
 
     :type df: pd.DataFrame
     :type positive_event_name: str
     :type negative_event_name: str
-    :type settings: dict
     :return: self
     :rtype: pd.DataFrame
     """
     logging.info('Start. Shape: {}'.format(df.shape))
-    if settings is not None:
-        positive_event_name = settings.get('positive_event', {}).get('name', u'passed')
-        negative_event_name = settings.get('negative_event', {}).get('name', u'lost')
 
     df = df.sort_values(['user_pseudo_id', 'event_timestamp'])
     last_row = df.groupby('user_pseudo_id', as_index=False).last()
@@ -183,7 +162,7 @@ def add_lost_events(df, positive_event_name=u'passed', negative_event_name=u'los
         last_row.event_name != positive_event_name, ['user_pseudo_id', 'event_name', 'event_timestamp']]
     if len(last_row):
         last_row.loc[:, 'event_name'] = negative_event_name
-        last_row.loc[:, 'event_timestamp'] += 1
+        last_row.loc[:, 'event_timestamp'] += _minumum_time_delta
 
         df = df.append(last_row, sort=False)
         df = df.sort_values(['user_pseudo_id', 'event_timestamp']).copy()
