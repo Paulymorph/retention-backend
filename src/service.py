@@ -17,6 +17,12 @@ class ModelHolder:
         return self.models_container.get(name)
 
     def train_model(self, name):
+        """
+        At this moment `name` bound to the group of "positive events" defined in config (i.e. "settings_yaml.yaml").
+        But in future implementation the naming principle could be changed.
+        :param name: Name of model to train
+        :return:
+        """
         if self.data_provider.get_events_count > 10:
             logging.debug("Start training model")
             events = self.data_provider.get_events()

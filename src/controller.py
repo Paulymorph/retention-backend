@@ -47,19 +47,6 @@ def list_events():
     return jsonify(events=events)
 
 
-@flaskApp.route("/model/prediction", methods=["GET"])
-def predict():
-    ## TODO Make model getting by name like in 'get_model'
-    model = model_holder.get_model()
-
-    sample = request.args.get('sample', type=str)
-    if sample is None:
-        abort(400, "Value of `sample` is not defined.")
-
-    prediction = model.predict_proba([sample])[0]
-    return jsonify(proba=str(prediction))
-
-
 @flaskApp.route("/model", methods=["GET"])
 def get_model():
     model_name = request.args.get('name', type=str)
