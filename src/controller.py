@@ -81,6 +81,17 @@ def get_saved_model(model_name):
     return send_from_directory(models_folder, file_name, attachment_filename=file_name)
 
 
+@flaskApp.route("/model/prediction", methods=["GET"])
+def predict():
+    model = model_holder.get_model('lostUser')
+
+    sample = request.args.get('sample', type=str)
+    if sample is None:
+        abort(400, "Value of `sample` is not defined.")
+
+    prediction = model.predict_proba([sample])[0]
+    return jsonify(proba=str(prediction))
+
 @flaskApp.route("/swagger.yaml", methods=["GET"])
 def swagger():
     return send_file("resources/swagger.yaml")
